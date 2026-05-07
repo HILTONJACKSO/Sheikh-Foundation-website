@@ -1,4 +1,4 @@
-import { blogPosts } from "@/lib/blog";
+import { getBlogPosts, getBlogPostBySlug } from "@/lib/blog";
 import Hero from "@/components/Hero";
 import Button from "@/components/Button";
 import { notFound } from "next/navigation";
@@ -14,13 +14,14 @@ interface BlogPostPageProps {
 }
 
 export async function generateStaticParams() {
+    const blogPosts = await getBlogPosts();
     return blogPosts.map((post) => ({
         slug: post.slug,
     }));
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
-    const post = blogPosts.find((p) => p.slug === params.slug);
+    const post = await getBlogPostBySlug(params.slug);
     if (!post) return { title: "Post Not Found" };
 
     return {
@@ -29,8 +30,8 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     };
 }
 
-export default function BlogPostDetailPage({ params }: BlogPostPageProps) {
-    const post = blogPosts.find((p) => p.slug === params.slug);
+export default async function BlogPostDetailPage({ params }: BlogPostPageProps) {
+    const post = await getBlogPostBySlug(params.slug);
 
     if (!post) {
         notFound();

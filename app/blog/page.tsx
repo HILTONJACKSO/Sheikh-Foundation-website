@@ -2,9 +2,11 @@ import Hero from "@/components/Hero";
 import SectionHeader from "@/components/SectionHeader";
 import BentoGrid from "@/components/BentoGrid";
 import Link from "next/link";
-import { blogPosts } from "@/lib/blog";
+import { getBlogPosts } from "@/lib/blog";
 
-export default function BlogPage() {
+export default async function BlogPage() {
+    const blogPosts = await getBlogPosts();
+    
     return (
         <div className="pb-20">
             <Hero
